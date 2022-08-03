@@ -1,3 +1,9 @@
+## 5.0.0
+
+- Fixes a bug where intermediate route redirect methods are not called.
+- **BREAKING CHANGE**
+  - Redesigns redirection API.
+
 ## 4.5.0
 
 - Adds ShellRoute for nested navigation support (flutter/flutter#99126)
