@@ -133,7 +133,7 @@ class GoRoute extends RouteBase {
         assert(
             pageBuilder != null ||
                 builder != _invalidBuilder ||
-                redirect != _noRedirection,
+                redirect != _emptyRedirect,
             'GoRoute builder parameter not set\n'),
         super._(
           routes: routes,
@@ -312,6 +312,10 @@ class GoRoute extends RouteBase {
   /// routes, also known as route guards. One canonical example is user
   /// authentication. See [Redirection](https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/redirection.dart)
   /// for a complete runnable example.
+  ///
+  /// If [BuildContext.dependOnInheritedWidgetOfExactType] is used during the
+  /// redirection (which is how `of` method is usually implemented), a
+  /// re-evaluation will be triggered if the [InheritedWidget] changes.
   final GoRouterRedirect redirect;
 
   /// An optional key specifying which Navigator to display this route's screen
@@ -329,13 +333,11 @@ class GoRoute extends RouteBase {
   Map<String, String> extractPathParams(RegExpMatch match) =>
       extractPathParameters(_pathParams, match);
 
-  static String? _emptyRedirect(GoRouterState state) => null;
+  static String? _emptyRedirect(BuildContext context, GoRouterState state) => null;
 
   final List<String> _pathParams = <String>[];
 
   late final RegExp _pathRE;
-
-  static String? _noRedirection(GoRouterState state) => null;
 
   static Widget _invalidBuilder(
     BuildContext context,
