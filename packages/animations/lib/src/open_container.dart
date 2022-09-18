@@ -99,6 +99,7 @@ class OpenContainer<T extends Object?> extends StatefulWidget {
     this.useRootNavigator = false,
     this.routeSettings,
     this.clipBehavior = Clip.antiAlias,
+    this.opaque = true,
   }) : super(key: key);
 
   /// Background color of the container while it is closed.
@@ -260,6 +261,8 @@ class OpenContainer<T extends Object?> extends StatefulWidget {
   ///  * [Material.clipBehavior], which is used to implement this property.
   final Clip clipBehavior;
 
+  final bool opaque;
+
   @override
   State<OpenContainer<T?>> createState() => _OpenContainerState<T>();
 }
@@ -299,6 +302,7 @@ class _OpenContainerState<T> extends State<OpenContainer<T?>> {
       transitionType: widget.transitionType,
       useRootNavigator: widget.useRootNavigator,
       routeSettings: widget.routeSettings,
+      opaque: widget.opaque,
     ));
     if (widget.onClosed != null) {
       widget.onClosed!(data);
@@ -413,6 +417,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
     required this.transitionType,
     required this.useRootNavigator,
     required RouteSettings? routeSettings,
+    required bool opaque,
   })  : _elevationTween = Tween<double>(
           begin: closedElevation,
           end: openElevation,
@@ -429,6 +434,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
         ),
         _closedOpacityTween = _getClosedOpacityTween(transitionType),
         _openOpacityTween = _getOpenOpacityTween(transitionType),
+        _opaque = opaque,
         super(settings: routeSettings);
 
   static _FlippableTweenSequence<Color?> _getColorTween({
@@ -554,6 +560,8 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
   final ContainerTransitionType transitionType;
 
   final bool useRootNavigator;
+
+  final bool _opaque;
 
   final Tween<double> _elevationTween;
   final ShapeBorderTween _shapeTween;
@@ -872,7 +880,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
   Color? get barrierColor => null;
 
   @override
-  bool get opaque => true;
+  bool get opaque => _opaque;
 
   @override
   bool get barrierDismissible => false;
